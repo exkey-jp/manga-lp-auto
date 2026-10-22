@@ -14,3 +14,7 @@ preview/
 build/
 qa/
 *.zip
+# Webアプリ
+webapp/.venv/
+webapp/data/
+.env
