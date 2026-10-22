@@ -1,0 +1,16 @@
+{
+ "_note": "各自の環境の設定。~/.config/manga-lp-auto/config.json にコピーして書き換える（リポジトリには入れない）",
+ "work_root": "~/manga-lp",
+ "github_owner": "your-github-account",
+ "chrome_profile_hint": "ChatGPT と GitHub にログイン済みの Chrome プロファイル名",
+ "extra_ng_files": [],
+ "house_rules": "~/.config/manga-lp-auto/house_rules.md",
+ "benchmark": {
+  "name": "過去の合格LP（見本）",
+  "site": "~/path/to/past-manga-lp/site",
+  "lp_json": "~/path/to/past-manga-lp/lp.json",
+  "panels_json": "~/path/to/past-manga-lp/panels.json",
+  "img": "~/path/to/past-manga-lp/img"
+ },
+ "openai_key_file": "~/.config/manga-lp-auto/openai_key"
+}

@@ -1,0 +1,308 @@
+{
+ "_note": "架空ブランドのサンプル。案件フォルダに lp.json としてコピーして書き換える。値はすべて架空（送信先・GTMは空）",
+ "site": {
+  "name": "ひなた住まい相談（サンプル）",
+  "tagline": "太陽光パネル＋蓄電池の無料診断",
+  "title": "毎月2万円の電気代、30年でいくら？｜無料診断｜ひなた住まい相談（サンプル）",
+  "description": "架空のサンプルLPです。",
+  "header_button": "無料診断",
+  "footer": "© ひなた住まい相談（サンプル）",
+  "prod_host": "example.com",
+  "manga_note": "※漫画はイメージです。登場人物は架空で、実在のお客様ではありません"
+ },
+ "colors": {
+  "navy": "#1d3557",
+  "cta": "#e76f51",
+  "cta-dark": "#b24a33"
+ },
+ "tracking": {
+  "gtm": "",
+  "gtm_note": ""
+ },
+ "gift": null,
+ "sticky": {
+  "label": "わが家の削減額を診断する"
+ },
+ "sim": {
+  "small": "3問・約20秒",
+  "title_html": "電気代シミュレーション<br><span class=\"mk\">あなたの家は、いくら下げられる？</span>",
+  "hint_html": "選ぶと、残りの2問に進みます。<br>最後に<b>想定削減額の目安</b>をお出しします"
+ },
+ "form": {
+  "form_id": 1,
+  "gas_url": "",
+  "mail_endpoint": "",
+  "payload_title": "電気代シミュレーション（漫画LP・サンプル）",
+  "heading_html": "電気代シミュレーション<br><span class=\"mk\">あなたの家は、いくら下げられる？</span>",
+  "contact_title": "診断結果を確認する",
+  "submit_label": "結果をみる →",
+  "trust": "✓ 無料　✓ 質問3つ＋ご連絡先",
+  "details": null,
+  "fine": "※サンプルのため送信はされません",
+  "prefs": [
+   "東京都",
+   "神奈川県",
+   "埼玉県",
+   "千葉県",
+   "その他"
+  ],
+  "steps": [
+   {
+    "q": "毎月の電気代はどのくらいですか？",
+    "note": "いちばん高い月で教えてください",
+    "options": [
+     {
+      "t": "1万円未満",
+      "emoji": "🪙",
+      "bill": 1,
+      "save": 4000,
+      "year": 48000
+     },
+     {
+      "t": "1万〜2万円",
+      "emoji": "💴",
+      "bill": 2,
+      "save": 7500,
+      "year": 90000
+     },
+     {
+      "t": "2万円以上",
+      "emoji": "💰",
+      "bill": 3,
+      "save": 12500,
+      "year": 150000
+     }
+    ]
+   },
+   {
+    "q": "お住まいは持ち家の一戸建てですか？",
+    "qualifier": true,
+    "options": [
+     {
+      "t": "はい",
+      "emoji": "🏠",
+      "qualify": true
+     },
+     {
+      "t": "いいえ",
+      "emoji": "🏢"
+     }
+    ]
+   },
+   {
+    "q": "興味のあるものは？",
+    "options": [
+     {
+      "t": "太陽光発電",
+      "emoji": "☀️",
+      "key": "pv"
+     },
+     {
+      "t": "蓄電池",
+      "emoji": "🔋",
+      "key": "bat"
+     },
+     {
+      "t": "おすすめを知りたい",
+      "emoji": "💡",
+      "key": "osusume"
+     }
+    ]
+   }
+  ],
+  "plan_default": "osusume",
+  "plan": {
+   "pv": {
+    "h": "太陽光でどれだけ下がるか",
+    "items": [
+     "屋根に載せられる容量",
+     "自宅で使える割合"
+    ]
+   },
+   "bat": {
+    "h": "蓄電池で何が変わるか",
+    "items": [
+     "夜に回せる電気の量",
+     "停電時に使える家電"
+    ]
+   },
+   "osusume": {
+    "h": "ご自宅に合う方法",
+    "items": [
+     "いまの電気の使い方の確認",
+     "設備を入れる場合の優先順位"
+    ]
+   }
+  }
+ },
+ "faq": [
+  [
+   "相談だけでもいい？",
+   "はい。費用はかかりません。"
+  ],
+  [
+   "しつこく営業されない？",
+   "不要とお伝えいただければ、ご連絡を控えます。"
+  ]
+ ],
+ "thanks": {
+  "title": "診断が完了しました｜ひなた住まい相談（サンプル）",
+  "lpName": "漫画LP（サンプル）",
+  "h1": "診断が完了しました！",
+  "lead": "ご回答内容から、削減の目安を算出しました。",
+  "amount": {
+   "label": "想定削減額の目安",
+   "pre": "月々 約",
+   "post": "円〜",
+   "yearPre": "年間では ",
+   "yearPost": " の削減が期待できます",
+   "fine": "※ご回答の電気代（{q1}）から算出したサンプルの目安です。実際は条件で変わります。"
+  },
+  "notTarget": [
+   "ご入力ありがとうございます。本サービスは",
+   "持ち家の一戸建ての方",
+   "を対象としております。"
+  ],
+  "pairImg": "S02_sim_result.webp",
+  "pairText": "費用と元が取れる年数は、無料の診断書でお出しします。",
+  "phone": "📞 お電話で診断書のご案内をします",
+  "planPrefix": "お電話でご案内すること：",
+  "flow": [
+   "お電話でご状況を確認",
+   "現地調査",
+   "診断書のご説明",
+   "ご家族で相談して決める"
+  ],
+  "closing": "※その場で契約を急かすことはありません。",
+  "trust": [
+   "🔒 SSL暗号化",
+   "💰 完全無料"
+  ],
+  "demo": {
+   "isTarget": true,
+   "q1text": "1万〜2万円",
+   "save": 7500,
+   "year": 90000,
+   "interest": "pv",
+   "plan": {
+    "h": "太陽光でどれだけ下がるか",
+    "items": [
+     "屋根に載せられる容量",
+     "自宅で使える割合"
+    ]
+   }
+  }
+ },
+ "privacy": {
+  "operator": [
+   "運営：ひなた住まい相談（架空）",
+   "所在地：（ここに運営者の住所）"
+  ],
+  "back_label": "← 診断ページに戻る"
+ },
+ "blocks": [
+  {
+   "type": "koma",
+   "img": "M00_fv.webp",
+   "alt": "FVの見本",
+   "id": "fv",
+   "fv": true
+  },
+  {
+   "type": "note",
+   "html": "※月2万円×12か月×30年の単純計算。値上がりは含みません"
+  },
+  {
+   "type": "cta",
+   "micro": "約20秒・3問で完了",
+   "label": "わが家の削減額を診断する",
+   "style": "padding-top:6px",
+   "tag": "div",
+   "after_blank": true
+  },
+  {
+   "type": "manga_note"
+  },
+  {
+   "type": "koma",
+   "img": "M01_shock.webp",
+   "alt": "見本のコマ1",
+   "ch": "intro",
+   "after_blank": true
+  },
+  {
+   "type": "chap",
+   "id": "c1",
+   "ch": "q1",
+   "q": "Q1",
+   "html": "なぜ、いま考えるべき？"
+  },
+  {
+   "type": "koma",
+   "img": "M02_naze.webp",
+   "alt": "見本のコマ2"
+  },
+  {
+   "type": "koma",
+   "img": "M03_zukai.webp",
+   "alt": "見本の図解"
+  },
+  {
+   "type": "note",
+   "html": "※図解の数字の出典をここに書きます"
+  },
+  {
+   "type": "html",
+   "html": "<section class=\"sec soft\">\n  <p class=\"hd sm\">太陽光＋蓄電池で、<br><span class=\"mk\">電気代はこう変わる</span></p>\n  <div class=\"slider\" aria-label=\"モデルケース\">\n    <div class=\"case\"><span class=\"who\">〇〇県・4人家族</span><span class=\"eq\">太陽光5kW＋蓄電池7kWh</span>\n      <div class=\"bf\"><span>導入前の電気代</span><b>20,000<small>円/月</small></b></div>\n      <i class=\"dn\" aria-hidden=\"true\">▼</i>\n      <div class=\"af\"><span>導入後の電気代</span><b>8,000<small>円/月</small></b></div>\n      <p class=\"cut\">毎月 <b>12,000円</b> 削減<em>約60%カット</em></p>\n      <span class=\"yr\">年間 約14.4万円の差</span></div>\n  </div>\n  <p class=\"fine\">※架空のサンプルです。実際の案件では「当社試算のモデルケース（実在のお客様の事例ではありません）」と注記します</p>\n</section>",
+   "after_blank": true
+  },
+  {
+   "type": "koma",
+   "img": "S01_sim_intro.webp",
+   "alt": "シミュレーター入口の見本",
+   "ch": "sim"
+  },
+  {
+   "type": "sim",
+   "after_blank": true
+  },
+  {
+   "type": "chap",
+   "id": "c2",
+   "ch": "q2",
+   "q": "Q2",
+   "html": "どこに頼めば安心？"
+  },
+  {
+   "type": "koma",
+   "img": "M04_anshin.webp",
+   "alt": "見本のコマ4"
+  },
+  {
+   "type": "cta",
+   "micro": "他社に決めてもOK",
+   "label": "今の見積もりを無料でチェック",
+   "sub": true,
+   "cls": "soft",
+   "after_blank": true
+  },
+  {
+   "type": "faq",
+   "title": "よくあるご質問"
+  },
+  {
+   "type": "koma",
+   "img": "M05_last.webp",
+   "alt": "見本の締めのコマ"
+  },
+  {
+   "type": "final",
+   "img": "M06_cta_bg.webp",
+   "html": "わが家の<br><span class=\"mk\">数字</span>を、<br>確かめて<br>みませんか？",
+   "after_blank": true
+  },
+  {
+   "type": "form"
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+# 秘密・各自の設定
+.env
+*.key
+openai_key
+config.json
+!config.example.json
+settings.json
+# 生成物
+__pycache__/
+*.pyc
+.DS_Store
+site/
+preview/
+build/
+qa/
+*.zip
