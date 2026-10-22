@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+<div style="display:flex;justify-content:space-between;align-items:center"><h1>制作一覧</h1><a class="btn" href="/new">＋ 新しく作る</a></div>
+<div class="card">
+{% if not jobs %}<p class="muted">まだありません。「新しく作る」から始めてください。</p>{% else %}
+<table><tr><th>クライアント</th><th>状態</th><th>工程</th><th>費用</th><th>作成</th></tr>
+{% for j in jobs %}{% set s = j.state %}
+<tr><td><a href="/jobs/{{ j.id }}">{{ j.name }}</a></td><td><span class="tag {{ s.status }}">{{ {'queued':'待機中','running':'作成中','waiting':'確認待ち','done':'完成','failed':'停止'}.get(s.status, s.status) }}</span></td>
+<td>{{ labels.get(s.stage, s.stage) }}</td><td>{{ '{:,}'.format((s.cost or {}).get('total_jpy', 0)) }}円</td><td class="muted">{{ s.created }} {{ s.user }}</td></tr>
+{% endfor %}</table>{% endif %}
+</div>
+{% endblock %}

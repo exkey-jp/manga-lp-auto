@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}{{ j.name }}｜漫画LP 自動制作{% endblock %}
+{% block head %}{% if s.status in ('running','queued') %}<meta http-equiv="refresh" content="15">{% endif %}{% endblock %}
+{% block body %}
+<h1>{{ j.name }} <span class="tag {{ s.status }}">{{ {'queued':'待機中','running':'作成中','waiting':'確認待ち','done':'完成','failed':'停止'}.get(s.status, s.status) }}</span></h1>
+<ul class="steps">
+{% set cur = steps.index(s.stage) if s.stage in steps else 0 %}
+{% for st in steps %}<li class="{{ 'now' if loop.index0 == cur else ('past' if loop.index0 < cur else '') }}">{{ labels.get(st, st) }}</li>{% endfor %}
+</ul>
+<p class="muted">費用 約{{ '{:,}'.format((s.cost or {}).get('total_jpy', 0)) }}円（上限 {{ '{:,}'.format(s.budget_jpy|int) }}円）・画像 {{ (s.cost or {}).get('images', 0) }}枚・Claude {{ (s.cost or {}).get('claude_calls', 0) }}回 {% if s.status in ('running','queued') %}・15秒ごとに更新{% endif %}</p>
+
+{# ---------- 停止 ---------- #}
+{% if s.status == 'failed' %}
+<div class="notice"><b>止まりました：</b>{{ s.error }}
+<form method="post" action="/jobs/{{ j.id }}/continue" style="margin-top:8px"><button class="btn">同じ工程からやり直す</button></form></div>
+{% endif %}
+
+{# ---------- 費用の上限 ---------- #}
+{% if s.waiting == 'budget' %}
+<div class="notice"><b>費用の上限に達したので止めています。</b>続ける場合は上限を上げてください。
+<form method="post" action="/jobs/{{ j.id }}/budget" style="margin-top:8px">上限に <input type="number" name="add" value="5000" style="width:120px"> 円を足して <button class="btn">続ける</button></form></div>
+{% endif %}
+
+{# ---------- 確認①：構成 ---------- #}
+{% if s.waiting == 'plan' %}
+<div class="notice"><b>確認①：構成とコマ一覧</b>　この流れとコマで画像を作り始めてよいか確認してください。</div>
+<div class="card">
+<h2 style="margin-top:0">プロンプト集（構成）</h2><pre class="md">{{ story }}</pre>
+<h2>コマ一覧（{{ pj.panels|length }}コマ）</h2>
+<table><tr><th>ID</th><th>章</th><th>サイズ</th><th>人物</th><th>文字</th></tr>
+{% for p in pj.panels %}<tr><td>{{ p.id }}</td><td>{{ p.chapter }}</td><td>{{ p.size }}{% if p.transparent %}・透過{% endif %}</td><td>{{ p.characters|join('・') }}</td><td>{{ p.texts|join(' ／ ') }}</td></tr>{% endfor %}
+</table>
+<h2>登場人物</h2><ul>{% for c in s.plan.characters %}<li><b>{{ c.name }}</b>：{{ c.description }}</li>{% endfor %}</ul>
+<h2>要確認リスト</h2><pre class="md">{{ kakunin }}</pre>
+<details><summary>参考LPの分析</summary><pre class="md">{{ s.plan.ref_analysis }}</pre></details>
+<form method="post" action="/jobs/{{ j.id }}/plan" style="margin-top:14px">
+<label>修正指示（直す場合）<textarea name="feedback" placeholder="例：第2章のM05を削って、補助金の図解を1枚足す"></textarea></label>
+<button class="btn ok" name="action" value="approve">この構成で進める</button>
+<button class="btn sub" name="action" value="revise">修正指示を送って作り直す</button>
+</form></div>
+{% endif %}
+
+{# ---------- 確認②：設定シート ---------- #}
+{% if s.waiting == 'chara' %}
+<div class="notice"><b>確認②：キャラクター設定シート</b>　この人物で全コマを描きます。並んだときに見分けがつくかも見てください。</div>
+<div class="card">
+<img src="/files/{{ j.id }}/img/P0_chara.png" style="width:100%;border:1px solid #ddd;border-radius:8px">
+{% if s.chara_check %}<p>点検：{{ s.chara_check.score }}点 {% for f in s.chara_check.findings %}<br>・{{ f.where }}：{{ f.now }} → {{ f.should }}{% endfor %}</p>{% endif %}
+<form method="post" action="/jobs/{{ j.id }}/chara">
+<label>修正指示（直す場合）<textarea name="feedback" placeholder="例：相談スタッフをショートボブに。主人公と髪型がかぶらないように"></textarea></label>
+<button class="btn ok" name="action" value="approve">この人物で進める</button>
+<button class="btn sub" name="action" value="revise">修正指示を送って直す</button>
+</form></div>
+{% endif %}
+
+{# ---------- 確認：合格しないコマ ---------- #}
+{% if s.waiting == 'panels' %}
+<div class="notice"><b>3回直しても合格しないコマがあります。</b>下の枠がオレンジのコマで「このまま使う／指示して作り直す／画像を差し替える」を選び、最後に「続ける」を押してください。
+<form method="post" action="/jobs/{{ j.id }}/continue" style="margin-top:8px"><button class="btn">続ける</button></form></div>
+{% endif %}
+
+{# ---------- 完成 ---------- #}
+{% if s.status == 'done' %}
+<div class="card" style="border:2px solid var(--ok)">
+<h2 style="margin-top:0">完成しました</h2>
+<p><a class="btn" href="/preview/{{ j.id }}/index.html" target="_blank">確認用ページを開く</a>　<a class="btn sub" href="/download/{{ j.id }}">本番用zipをダウンロード</a></p>
+<p class="muted">確認用ページは送信・計測をしません（社内ログインが必要）。zipの中の README.txt が公開手順です。</p>
+{% if s.review %}<p>全体の採点：<b>{{ s.review.score }}点</b>{% for w in s.review.worse %}<br>・{{ w.where }}：{{ w.detail }}{% endfor %}</p>{% endif %}
+<h3>最終チェック（○×）</h3>
+<ul>
+<li>スマホで1画面目に「誰向け・何がわかる・ボタン」がある</li>
+<li>話の流れが自然で、人物が最後まで同じ人に見える</li>
+<li>漫画の文字・数字が正しく、注記が付いている</li>
+<li>使っていない表現（0円・割引・先着・架空の声）が出ていない</li>
+<li>シミュレーター → フォーム → サンクスが動き、結果が出る</li>
+<li>要確認リストの残りを、このまま公開してよいか</li>
+</ul>
+<h3>要確認リスト</h3><pre class="md">{{ kakunin }}</pre>
+</div>
+{% endif %}
+
+{# ---------- コマ ---------- #}
+{% if pj %}
+<h2 id="panels">コマ（{{ pj.panels|selectattr('status','in',['done','accepted'])|list|length }} / {{ pj.panels|length }}）</h2>
+<div class="panels">
+{% for p in pj.panels %}
+<div class="panel {{ p.status }}">
+{% if p.img %}<a href="/files/{{ j.id }}/img/{{ p.img }}" target="_blank"><img src="/files/{{ j.id }}/img/{{ p.img }}" loading="lazy" alt="{{ p.id }}"></a>{% else %}<img alt="">{% endif %}
+<div class="b"><b>{{ p.id }}</b> {{ p.chapter }}<br>
+<span class="muted">{{ {'todo':'未着手','fixing':'直し中','done':'合格','accepted':'採用（人）','ask_human':'要確認'}.get(p.status, p.status) }}{% if p.score %}・{{ p.score }}点{% endif %}{% if p.attempts %}・直し{{ p.attempts }}回{% endif %}</span>
+{% if p.judge and p.judge.findings %}<br><span class="muted">{% for f in p.judge.findings[:2] %}{{ f.where }}：{{ f.now }}→{{ f.should }}<br>{% endfor %}</span>{% endif %}
+{% if p.status == 'ask_human' %}
+<form method="post" action="/jobs/{{ j.id }}/panel/{{ p.id }}" enctype="multipart/form-data">
+<button class="btn sub" name="action" value="accept" style="padding:5px 10px;font-size:13px">このまま使う</button>
+<textarea name="feedback" placeholder="作り直しの指示" style="min-height:50px;margin-top:6px"></textarea>
+<button class="btn sub" name="action" value="retry" style="padding:5px 10px;font-size:13px">指示して作り直す</button>
+<input type="file" name="file" accept="image/png,image/webp,image/jpeg" style="margin-top:6px;font-size:12px">
+<button class="btn sub" name="action" value="upload" style="padding:5px 10px;font-size:13px">画像を差し替える</button>
+</form>{% endif %}
+</div></div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if screens %}
+<h2>スマホ画面</h2><div class="screens">{% for f in screens %}<img src="/files/{{ j.id }}/qa/screens/{{ f }}" loading="lazy" alt="">{% endfor %}</div>
+{% endif %}
+
+<h2>入力内容</h2>
+<div class="card"><table>{% for k, v in s.inputs.items() if v and k != 'gas_url' %}<tr><th style="width:180px">{{ k }}</th><td>{{ v }}</td></tr>{% endfor %}</table></div>
+
+<h2>記録</h2>
+<div class="log">{% for l in s.log|reverse %}{{ l.at }}　{{ l.msg }}<br>{% endfor %}</div>
+{% endblock %}

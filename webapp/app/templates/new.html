@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>新しく漫画LPを作る</h1>
+<p class="muted">入力して「作成を始める」を押すと、裏で自動で作り始めます（1件 2〜3時間）。途中で「構成」と「キャラクター設定シート」の確認をお願いすることがあります（Chatworkで知らせます）。</p>
+{% if error %}<p class="err">{{ error }}</p>{% endif %}
+{% set v = v or {} %}
+<form method="post" action="/new" class="card">
+<h2 style="margin-top:0">必須</h2>
+<div class="grid2">
+<label>クライアント名<input type="text" name="client" required value="{{ v.client }}"></label>
+<label>参考LPのURL <small>このLPの構成と見せ方を参考にします</small><input type="url" name="ref_url" required placeholder="https://" value="{{ v.ref_url }}"></label>
+</div>
+<h2>クライアントの情報 <small class="muted">あるほど正確になります</small></h2>
+<div class="grid2">
+<label>商材<input type="text" name="product" placeholder="例：太陽光パネル＋蓄電池" value="{{ v.product }}"></label>
+<label>対応エリア<input type="text" name="area" placeholder="例：東京・神奈川・埼玉・千葉" value="{{ v.area }}"></label>
+<label>公式サイトのURL<input type="url" name="site_url" value="{{ v.site_url }}"></label>
+<label>LP戦略シート・ワイヤーのURL <small>Googleスプレッドシート／ドキュメントは「リンクを知っている全員が閲覧可」に</small><input type="url" name="strategy_url" value="{{ v.strategy_url }}"></label>
+<label>既存の診断LPのURL <small>シミュレーターの設問をそろえます</small><input type="url" name="diag_url" value="{{ v.diag_url }}"></label>
+<label>オファー・特典<input type="text" name="offer" placeholder="例：無料診断／Amazonギフト最大◯円分（条件あり）" value="{{ v.offer }}"></label>
+</div>
+<label>使ってよい数字 <small>出典も書いてください。ここに無い数字は「要確認」になります</small><textarea name="numbers">{{ v.numbers }}</textarea></label>
+<label>その他の指示・資料 <small>使わない表現、事例の前提（例：約9割削減）、トーンなど</small><textarea name="notes">{{ v.notes }}</textarea></label>
+<h2>送信先・計測 <small class="muted">空でも作れます（確認用では送信・計測しません）</small></h2>
+<div class="grid2">
+<label>本番ドメイン <small>このドメインのときだけ送信</small><input type="text" name="prod_host" placeholder="example.com" value="{{ v.prod_host }}"></label>
+<label>GTM ID<input type="text" name="gtm" placeholder="GTM-XXXXXXX" value="{{ v.gtm }}"></label>
+<label>フォーム番号（FORM_ID）<input type="text" name="form_id" value="{{ v.form_id }}"></label>
+<label>送信先（GASのURL）<input type="url" name="gas_url" value="{{ v.gas_url }}"></label>
+<label>通知メール用（mail.php などの相対パス）<input type="text" name="mail_endpoint" placeholder="mail.php" value="{{ v.mail_endpoint }}"></label>
+</div>
+<p style="margin-top:20px"><button class="btn">作成を始める</button></p>
+</form>
+{% endblock %}
